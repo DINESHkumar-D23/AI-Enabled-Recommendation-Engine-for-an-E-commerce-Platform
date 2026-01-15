@@ -5,6 +5,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 def content_based_recommendation(data, item_name, top_n=10):
+  data = data.reset_index(drop=True)
+
   if item_name not in data['Name'].values:
     print(f"item '{item_name}' not found in the data.")
     return pd.DataFrame()
@@ -22,7 +24,7 @@ def content_based_recommendation(data, item_name, top_n=10):
 
   recommended_items_indices = [x[0] for x in top_similar_prod]
 
-  recommended_item_details = data.iloc[recommended_items_indices][['Name', 'ReviewCount', 'Brand']]
+  recommended_item_details = data.iloc[recommended_items_indices][['Name', 'ReviewCount', 'Brand', 'ImageURL', 'Rating']]
 
   return recommended_item_details
 
