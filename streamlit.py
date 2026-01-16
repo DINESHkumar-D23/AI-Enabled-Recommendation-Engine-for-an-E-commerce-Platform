@@ -137,19 +137,30 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-/* Entire page background */
+/* 1. Load Inter explicitly */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* 2. Force font everywhere */
+html, body, [data-testid="stApp"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+}
 html, body, [data-testid="stApp"] {
     background: linear-gradient(90deg, #0f172a, #020617);
 }
-
-/* Remove default white background from content area */
-.block-container {
-    background: transparent;
+/* 3. Force heading weights (important) */
+h1, h2, h3 {
+    font-weight: 700 !important;
 }
 
-/* Sidebar (if used anywhere) */
-section[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #020617, #0f172a);
+.navbar h1 {
+    font-weight: 700 !important;
+}
+
+.navbar span {
+    font-weight: 500 !important;
 }
 </style>
 """, unsafe_allow_html=True)
