@@ -136,6 +136,24 @@ st.set_page_config(
 )
 st.markdown("""
 <style>
+/* Remove Streamlit max-width & padding in production */
+.block-container {
+    max-width: 100% !important;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+}
+
+/* Make navbar truly full-width */
+.navbar {
+    margin-left: calc(-1 * var(--block-container-padding-left, 2.5rem));
+    margin-right: calc(-1 * var(--block-container-padding-right, 2.5rem));
+    border-radius: 0 0 16px 16px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<style>
 /* Entire page background */
 html, body, [data-testid="stApp"] {
     background: linear-gradient(90deg, #0f172a, #020617);
