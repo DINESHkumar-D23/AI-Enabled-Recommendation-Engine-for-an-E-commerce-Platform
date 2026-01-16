@@ -134,10 +134,24 @@ st.set_page_config(
     page_icon="6795674-200.png",
     layout="wide"
 )
+st.markdown("""
+<style>
+/* Entire page background */
+html, body, [data-testid="stApp"] {
+    background: linear-gradient(90deg, #0f172a, #020617);
+}
 
-st.title("AI-Powered Recommendation System")
-st.caption("Accessible • User-friendly • Hybrid AI engine")
+/* Remove default white background from content area */
+.block-container {
+    background: transparent;
+}
 
+/* Sidebar (if used anywhere) */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #020617, #0f172a);
+}
+</style>
+""", unsafe_allow_html=True)
 
 # ------------------------------------------------------
 # Load & preprocess data
@@ -150,12 +164,58 @@ def load_data():
 data = load_data()
 
 
-# ------------------------------------------------------
-# Sidebar controls
-# ------------------------------------------------------
-with st.sidebar:
-    st.header("Controls")
+# ======================================================
+# ROW 1 → OPTIONS (Top control bar)
+# ======================================================
+st.markdown("""
+<style>
+.navbar {
+    width: 100%;
+    padding: 2rem 2.5rem;
+    background: linear-gradient(90deg, #0f172a, #020617);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    margin-bottom: 2.5rem;
+    border: 1px solid #1e293b;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
 
+.navbar:hover {
+    box-shadow: 0 18px 55px rgba(15,23,42,0.9),
+                0 0 30px rgba(56,189,248,1.0);
+    transform: translateY(-2px);
+}
+
+.navbar h1 {
+    color: white;
+    font-size: 2rem;
+    margin: 0;
+    letter-spacing: 0.6px;
+    text-align: center;
+}
+
+.navbar span {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin-top: 0.4rem;
+    text-align: center;
+}
+</style>
+
+<div class="navbar">
+    <h1>AI-Powered Recommendation System</h1>
+    <span>Smart • Personalized • AI-Driven</span>
+</div>
+""", unsafe_allow_html=True)
+
+
+col1, col2 = st.columns([3, 2])
+
+with col1:
     algo = st.radio(
         "Choose recommendation strategy",
         (
@@ -163,15 +223,52 @@ with st.sidebar:
             "Content Based",
             "Collaborative",
             "Hybrid"
-        )
+        ),
+        horizontal=True
     )
 
-    top_n = st.slider("Number of recommendations", 1, 20, 8)
+with col2:
+    top_n = st.radio(
+        "Number of recommendations",
+        [5, 10, 20, 30, 40, 50],
+        horizontal=True
+    )
+
+st.divider()
 
 
-# ------------------------------------------------------
+# ======================================================
+# ROW 2 → APP NAME (Header)
+# ======================================================
+st.markdown("""
+<style>
+.section-title {
+    margin-bottom: 1.5rem;
+}
+
+.section-title h2 {
+    color: white;
+    font-size: 2.2rem;
+    margin-bottom: 0.3rem;
+}
+.section-title p {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin-top: 0rem;
+}
+</style>
+
+<div class="section-title">
+    <h2>Your Recommendation Dashboard</h2>
+    <p>Explore personalized product suggestions tailored just for you</p>
+</div>
+""", unsafe_allow_html=True)
+
+
+
+# ======================================================
 # Helper functions
-# ------------------------------------------------------
+# ======================================================
 def recommendation_reason(strategy):
     if strategy == "Top Rated":
         return "**Recommended because it has high overall ratings**"
@@ -181,65 +278,80 @@ def recommendation_reason(strategy):
         return "**Recommended because similar users liked this product**"
     elif strategy == "Hybrid":
         return "**Recommended using both product similarity and user behavior**"
-    else:
-        return "**Recommended for you**"
+    return "**Recommended for you**"
 
 
 def resolve_product_name(typed_name, product_list):
-    """
-    Match typed product name to actual product name (partial match).
-    """
     if not typed_name:
         return None
 
     typed_name = typed_name.lower().strip()
-    matches = [
-        p for p in product_list
-        if typed_name in p.lower()
-    ]
-
+    matches = [p for p in product_list if typed_name in p.lower()]
     return matches[0] if matches else None
 
 
-# ------------------------------------------------------
-# Inputs
-# ------------------------------------------------------
-# product_placeholder = "Select a product..."
+# ======================================================
+# ROW 3 → INPUTS + OUTPUT
+# ======================================================
 user_placeholder = "Select user ID..."
-
-# product_names = [product_placeholder] + sorted(data["Name"].unique())
 user_ids = [user_placeholder] + sorted(data["ID"].unique())
 
-# selected_product = None
 selected_user = None
 typed_product = None
+selected_product = None
+
+input_col, info_col = st.columns([3, 1])
+
+with input_col:
+
+    if algo in ("Content Based", "Hybrid"):
+        st.subheader("Product Input")
+        typed_product = st.text_input(
+            "Type product name",
+            placeholder="e.g. iPhone, shoes, laptop..."
+        )
+
+    if algo in ("Collaborative", "Hybrid"):
+        st.subheader("User Input")
+        selected_user = st.selectbox("Select user ID", user_ids)
+
+    run = st.button("Get Recommendations", use_container_width=True)
 
 
-# Product input (text + dropdown)
-if algo in ("Content Based", "Hybrid"):
-    st.subheader("Product Input")
+with info_col:
+    st.markdown("""
+    <style>
+    .info-box {  
+        box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+        transition: box-shadow 0.35s ease, transform 0.35s ease;
+    }
+    .info-box:hover {
+        box-shadow: 0 18px 55px rgba(15,23,42,0.9),
+                    0 0 30px rgba(56,189,248,1.0);
+        transform: translateY(-2px);   
+    } 
+    </style> 
+    <div class=info-box style="
+        background:#020617;
+        padding:1.75rem;
+        margin-top:1.1rem;        
+        border-radius:12px;
+        border:1px solid #1e293b;
+    ">
+    <h4 style="color:white;">How it works</h4>
+    <p style="color:#94a3b8;font-size:0.9rem;">
+    The App is a algorithm-based recommendation engine for an e-commerce platform. 
+    It delivers personalized product suggestions using user behavior, product features, and ratings.
+    Content-based, collaborative, and hybrid approaches are implemented to demonstrate how different recommendation strategies work individually and together.
+    </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    typed_product = st.text_input(
-        "Type product name (recommended)",
-        placeholder="e.g. iPhone, shoes, laptop..."
-    )
 
-    # selected_product = st.selectbox(
-    #     "Or select product from list",
-    #     product_names
-    # )
-
-
-# User input
-if algo in ("Collaborative", "Hybrid"):
-    st.subheader("User Input")
-    selected_user = st.selectbox("Select user ID", user_ids)
-
-
-# ------------------------------------------------------
+# ======================================================
 # Recommendation logic
-# ------------------------------------------------------
-if st.button("Get Recommendations"):
+# ======================================================
+if run:
 
     resolved_product = None
 
@@ -248,14 +360,11 @@ if st.button("Get Recommendations"):
             typed_product,
             data["Name"].unique()
         )
-
-        # Typed product has higher priority
         if resolved_product:
             selected_product = resolved_product
 
-    # ---------------- Validation ----------------
     if algo in ("Content Based", "Hybrid") and not selected_product:
-        st.warning("Please type or select a product.")
+        st.warning("Please type a valid product name.")
         result = get_top_rated_items(data, top_n)
 
     elif algo in ("Collaborative", "Hybrid") and (
@@ -286,11 +395,10 @@ if st.button("Get Recommendations"):
                     )
 
                 if result is None or result.empty:
-                    st.warning("No recommendations found. Showing top rated items.")
                     result = get_top_rated_items(data, top_n)
 
             except Exception as e:
-                st.error("Something went wrong. Falling back to Top Rated.")
+                st.error("Something went wrong.")
                 st.exception(e)
                 result = get_top_rated_items(data, top_n)
 
@@ -307,7 +415,7 @@ if st.button("Get Recommendations"):
         with cols[idx % 4]:
             if "ImageURL" in row and isinstance(row["ImageURL"], str):
                 if row["ImageURL"].startswith(("http://", "https://")):
-                    st.image(row["ImageURL"], width=250)
+                    st.image(row["ImageURL"], use_container_width=True)
                 else:
                     st.markdown("*Image not available*")
 
