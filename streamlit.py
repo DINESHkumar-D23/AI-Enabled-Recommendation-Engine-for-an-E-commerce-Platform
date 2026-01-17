@@ -126,9 +126,8 @@ from collaborative_based_filtering import collaborative_filtering_recommendation
 from hybrid_approach import hybrid_recommendation_filtering
 
 
-# ------------------------------------------------------
 # Page config
-# ------------------------------------------------------
+ 
 st.set_page_config(
     page_title="AI E-Commerce Recommender",
     page_icon="6795674-200.png",
@@ -164,66 +163,17 @@ h1, h2, h3 {
 }
 </style>
 """, unsafe_allow_html=True)
-
-# ------------------------------------------------------
+st.title(" AI-Powered Recommendation System")
 # Load & preprocess data
-# ------------------------------------------------------
+
 @st.cache_data
 def load_data():
     df = pd.read_csv("clean_data.csv")
     return process_data(df)
 
 data = load_data()
-
-
-# ======================================================
+ 
 # ROW 1 → OPTIONS (Top control bar)
-# ======================================================
-st.markdown("""
-<style>
-.navbar {
-    width: 100%;
-    padding: 2rem 2.5rem;
-    background: linear-gradient(90deg, #0f172a, #020617);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 16px;
-    margin-bottom: 2.5rem;
-    border: 1px solid #1e293b;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
-    transition: box-shadow 0.35s ease, transform 0.35s ease;
-}
-
-.navbar:hover {
-    box-shadow: 0 18px 55px rgba(15,23,42,0.9),
-                0 0 30px rgba(56,189,248,1.0);
-    transform: translateY(-2px);
-}
-
-.navbar h1 {
-    color: white;
-    font-size: 2rem;
-    margin: 0;
-    letter-spacing: 0.6px;
-    text-align: center;
-}
-
-.navbar span {
-    color: #94a3b8;
-    font-size: 1rem;
-    margin-top: 0.4rem;
-    text-align: center;
-}
-</style>
-
-<div class="navbar">
-    <h1>AI-Powered Recommendation System</h1>
-    <span>Smart • Personalized • AI-Driven</span>
-</div>
-""", unsafe_allow_html=True)
-
 
 col1, col2 = st.columns([3, 2])
 
@@ -247,8 +197,6 @@ with col2:
     )
 
 st.divider()
-
-
 # ======================================================
 # ROW 2 → APP NAME (Header)
 # ======================================================
